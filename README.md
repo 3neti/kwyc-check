@@ -48,3 +48,50 @@ and family onboarding. ☺
 6. UAAP
 7. LTO
 
+##Tasks
+1. Anybody can register an organization and becomes the default admin.
+2. An organization can be paired with a domain name.
+3. The domain name of the organization can be confirmed by the admin with the same domain name in email.
+4. Admin can configure the organization campaigns.
+5. Each campaign has repository.
+6. Any user with enough credits can order a campaign.
+7. A campaign has a repository and the service package required.
+8. Each packages has itemized products.
+##Enumeration
+###Channel
+i.e. Email, SMS, HTTP POST
+###Format
+i.e. TXT, CSV, XLS, SQL
+##Entities
+###Organization
+1. Name e.g. Acme Corporation, Garnet PSHS SY 1983-1984
+2. Admin [User]
+###Repository
+1. Organization
+2. Name e.g. Project 1 Lead Generation
+3. Channel (see enum)
+4. Format (see enum)
+5. Address e.g. somebody@domain.com
+6. Command
+###Product
+1. Code
+2. Name i.e. Face Check, OTP, OCR, Dedup
+3. Price
+###Package (Service Package)
+1. Name e.g. Onboarding, Onboarding w/ OTP, OTP
+2. Price
+###PackageProducts
+1. Package
+2. Product
+###Campaign
+1. Organization
+2. Repository
+3. Package
+###Order
+1. User
+2. Date/Time
+###OrderItem
+1. Order
+2. Campaign
+3. Qty (default 1)
+4. Price
