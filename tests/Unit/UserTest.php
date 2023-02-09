@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Database\Seeders\UserSeeder;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -11,13 +12,32 @@ class UserTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    protected $user;
+    /** @var User  */
+    protected User $user;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->user = User::factory()->create();
+    }
 
-        $this->user = User::factory()->createQuietly(['email_verified_at' => null]);
+    /** @test */
+    public function users_table_has_a_seeder()
+    {
+        /*** assert ***/
+        $this->assertDatabaseMissing('users', [
+            'name' => 'Lester Hurtado',
+            'email' => '3neti@lyflyn.net',
+        ]);
+
+        /*** act ***/
+        $this->seed(UserSeeder::class);
+
+        /*** assert ***/
+        $this->assertDatabaseHas('users', [
+            'name' => 'Lester Hurtado',
+            'email' => '3neti@lyflyn.net',
+        ]);
     }
 
     /** @test */

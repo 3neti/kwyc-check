@@ -59,37 +59,39 @@ and family onboarding. ☺
 8. Each packages has itemized products.
 ##Enumeration
 ###Channel
-i.e. Email, SMS, HTTP POST
+i.e. Email, SMS, HTTP POST 
 ###Format
-i.e. TXT, CSV, XLS, SQL
+i.e. TXT, CSV, XLS, SQL 
 ##Entities
 ###Organization
 1. Name e.g. Acme Corporation, Garnet PSHS SY 1983-1984
 2. Admin [User]
-###Repository
-1. Organization
-2. Name e.g. Project 1 Lead Generation
-3. Channel (see enum)
-4. Format (see enum)
-5. Address e.g. somebody@domain.com
-6. Command
 ###Product
 1. Code
 2. Name i.e. Face Check, OTP, OCR, Dedup
 3. Price
 ###Package (Service Package)
-1. Name e.g. Onboarding, Onboarding w/ OTP, OTP
-2. Price
+1. Code
+2. Name e.g. Onboarding, Onboarding w/ OTP, OTP
+3. Price
 ###PackageProducts
 1. Package
 2. Product
+###Repository
+1. Name e.g. Project 1 Lead Generation
+2. Organization
+3. Channel (see enum)
+4. Format (see enum)
+5. Address e.g. somebody@domain.com
+6. Command
 ###Campaign
-1. Organization
+1. Package
 2. Repository
-3. Package
+3. Active
+4. Start Date
+5. End Date
 ###Order
 1. User
-2. Date/Time
 ###OrderItem
 1. Order
 2. Campaign
