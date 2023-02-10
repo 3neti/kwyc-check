@@ -16,6 +16,11 @@ class Package extends Model
         'price' => 'float',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
+
     public function packageItems(): HasMany
     {
         return $this->hasMany(Product::class);

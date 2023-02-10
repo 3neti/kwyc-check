@@ -38,4 +38,27 @@ class CampaignTest extends TestCase
             'end_date' => $end_date
         ]);
     }
+
+    /** @test */
+    public function campaign_has_default_active_start_date_and_end_date()
+    {
+        /*** arrange ***/
+        $package = Package::factory()->create();
+        $repository = Repository::factory()->create();
+
+        /*** act ***/
+        $campaign = Campaign::make();
+        $campaign->package()->associate($package);
+        $campaign->repository()->associate($repository);
+        $campaign->save();
+
+        /*** assert ***/
+        $this->assertDatabaseHas(Campaign::class, [
+            'package_id' => $package->id,
+            'repository_id' => $repository->id,
+            'active' => true, //put this in config
+            'start_date' => null, //put this in config
+            'end_date' => null //put this in config
+        ]);
+    }
 }

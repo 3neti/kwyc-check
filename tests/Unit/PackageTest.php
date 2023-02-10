@@ -30,7 +30,7 @@ class PackageTest extends TestCase
     }
 
     /** @test */
-    public function packages_accepts_code_name_and_price()
+    public function package_accepts_code_name_and_price()
     {
         /*** arrange ***/
         $code = $this->faker->uuid;
@@ -42,6 +42,19 @@ class PackageTest extends TestCase
 
         /*** assert ***/
         $this->assertDatabaseHas(Package::class, compact('code', 'name', 'price'));
+    }
+
+    /** @test */
+    public function package_code_is_unique()
+    {
+        /*** assert ***/
+        $this->expectExceptionCode('23000');
+
+        /*** arrange ***/
+        $code = Package::factory()->create()->code;
+
+        /*** act ***/
+        Package::factory()->create(['code' => $code]);
     }
 
     /** @test  */

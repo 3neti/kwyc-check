@@ -57,6 +57,13 @@ and family onboarding. ☺
 6. Any user with enough credits can order a campaign.
 7. A campaign has a repository and the service package required.
 8. Each packages has itemized products.
+##Process flow
+###ORG REGISTRATION
+###ORG FEEDBACK
+###AGENT REGISTRATION
+###AGENT FEEDBACK
+###CUSTOMER REGISTRATION
+###CUSTOMER FEEDBACK
 ##Enumeration
 ###Channel
 i.e. Email, SMS, HTTP POST 

@@ -21,8 +21,8 @@ class EnumTest extends TestCase
     public function application_has_enumerated_formats()
     {
         $this->assertEquals('Text', FormatEnum::TXT->value);
-        $this->assertEquals('Comma-Separated Values', FormatEnum::CSV->value);
-        $this->assertEquals('Excel Worksheet', FormatEnum::XLS->value);
-        $this->assertEquals('Structured Query Language', FormatEnum::SQL->value);
+        $this->assertEquals('CSV', FormatEnum::CSV->value);
+        $this->assertEquals('Excel', FormatEnum::XLS->value);
+        $this->assertEquals('SQL', FormatEnum::SQL->value);
     }
 }

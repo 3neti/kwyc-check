@@ -16,7 +16,7 @@ class Repository extends Model
 
     protected $casts = [
         'channel' => ChannelEnum::class,
-        'format' > FormatEnum::class,
+        'format' => FormatEnum::class,
     ];
 
     public function organization(): BelongsTo
