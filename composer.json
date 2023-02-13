@@ -13,7 +13,11 @@
         "laravel/jetstream": "^2.16",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "lbhurtado/sms": "^2.2",
         "lorisleiva/laravel-actions": "^2.5",
+        "moirei/laravel-vouchers": "^3.0",
+        "spatie/laravel-schemaless-attributes": "^2.4",
+        "spomky-labs/otphp": "^11.1",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {

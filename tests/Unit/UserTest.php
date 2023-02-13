@@ -138,4 +138,49 @@ class UserTest extends TestCase
         /*** assert ***/
         $this->assertEquals($initial_amount/100, $this->user->balanceFloat);
     }
+
+    /** @test */
+    public function user_accepts_mobile()
+    {
+        /*** arrange ***/
+        $user = User::factory()->create();
+        $mobile = '+639171234567';
+
+        /*** assert ***/
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'mobile' => null
+        ]);
+
+        /*** act ***/
+        $user->mobile = $mobile;
+        $user->save();
+
+        /*** assert ***/
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'mobile' => $mobile
+        ]);
+    }
+
+    /** @test */
+    public function user_can_be_verified_via_otp()
+    {
+        /*** arrange ***/
+        $user = User::factory()->create(['mobile_verified_at' => null]);
+
+        /*** assert ***/
+        $this->assertFalse($user->verified());
+
+        /*** arrange ***/
+        $user->challenge();
+        $otp = $user->getTOTP();
+        $pin = $otp->now();
+
+        /*** act ***/
+        $user->verify($pin);
+
+        /*** assert ***/
+        $this->assertTrue($user->verified());
+    }
 }

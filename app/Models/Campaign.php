@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use MOIREI\Vouchers\Traits\HasVouchers;
 
 class Campaign extends Model
 {
-    use HasFactory;
+    use HasFactory, HasVouchers;
 
     protected $fillable = ['active', 'start_date', 'end_date'];
 
