@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Spatie\SchemalessAttributes\Casts\SchemalessAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use MOIREI\Vouchers\Traits\CanRedeemVouchers;
-use Illuminate\Notifications\Notifiable;
 use Bavix\Wallet\Interfaces\Confirmable;
 use Bavix\Wallet\Interfaces\WalletFloat;
 use Bavix\Wallet\Traits\HasWalletFloat;
@@ -21,6 +19,8 @@ use Bavix\Wallet\Traits\HasWallet;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Jetstream\HasTeams;
 use App\Traits\Verifiable;
+use App\Traits\HasMobile;
+use App\Traits\HasData;
 
 class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
 {
@@ -28,11 +28,12 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
     use HasFactory;
     use HasProfilePhoto;
     use HasTeams;
-    use Notifiable;
     use TwoFactorAuthenticatable;
     use HasWallet, CanConfirm, HasWallets, HasWalletFloat;
     use CanRedeemVouchers;
+    use HasMobile;
     use Verifiable;
+    use HasData;
 
     /**
      * The attributes that are mass assignable.
@@ -40,8 +41,7 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
      * @var string<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'mobile', 'data',
-        'uri'
+        'name', 'email', 'password'
     ];
 
     /**
@@ -62,9 +62,7 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
      * @var array<string, string>
      */
     protected $casts = [
-        'data' => SchemalessAttributes::class,
         'email_verified_at' => 'datetime',
-        'mobile_verified_at' => 'datetime',
     ];
 
     /**
@@ -76,31 +74,8 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
         'profile_photo_url',
     ];
 
-    protected $schemalessAttributes = [
-        'data',
-    ];
-
     public function organizations(): HasMany
     {
         return $this->hasMany(Organization::class);
-    }
-
-    public function routeNotificationForEngageSpark()
-    {
-        $field = config('engagespark.notifiable.route');
-
-        return $this->{$field};
-    }
-
-    public function getURIAttribute()
-    {
-        return $this->data['uri'];
-    }
-
-    public function setURIAttribute($value): self
-    {
-        $this->data['uri'] = $value;
-
-        return $this;
     }
 }

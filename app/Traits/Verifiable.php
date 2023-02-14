@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Notifications\Notifiable;
 use OTPHP\TOTPInterface;
 use OTPHP\OTPInterface;
 use OTPHP\Factory;
@@ -9,6 +10,17 @@ use OTPHP\TOTP;
 
 trait Verifiable
 {
+    use Notifiable;
+
+    public function initializeVerifiable()
+    {
+        $this->fillable = array_merge(
+            $this->fillable, [
+                'uri'
+            ]
+        );
+    }
+
     public function setTOTP(TOTPInterface $totp): self
     {
         $totp->setLabel(config('domain.otp.label'));
@@ -46,5 +58,17 @@ trait Verifiable
     public function verified(): bool
     {
         return $this->mobile_verified_at && $this->mobile_verified_at <= now();
+    }
+
+    public function getURIAttribute()
+    {
+        return $this->data['uri'];
+    }
+
+    public function setURIAttribute($value): self
+    {
+        $this->data['uri'] = $value;
+
+        return $this;
     }
 }
