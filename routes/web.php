@@ -32,4 +32,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+    Route::get('/register-user/{org_id}', function ($org_id) {
+        return Inertia::render('RegisterUser', compact('org_id'));
+    })->name('register-user');
 });

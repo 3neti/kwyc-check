@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -74,8 +75,10 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
         'profile_photo_url',
     ];
 
-    public function organizations(): HasMany
+    public function organizations(): BelongsToMany
     {
-        return $this->hasMany(Organization::class);
+        return $this->belongsToMany(Organization::class)
+            ->withPivot('active')
+            ->withTimestamps();
     }
 }

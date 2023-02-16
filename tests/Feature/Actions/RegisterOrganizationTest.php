@@ -3,8 +3,10 @@
 namespace Tests\Feature\Actions;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Notifications\SendRegisterUserNotification;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Actions\OrgRegistration;
+use Illuminate\Support\Facades\Notification;
+use App\Actions\RegisterOrganization;
 use App\Models\Organization;
 use App\Models\Repository;
 use App\Enums\ChannelEnum;
@@ -14,12 +16,12 @@ use App\Models\Package;
 use App\Models\User;
 use Tests\TestCase;
 
-class OrgRegistrationTest extends TestCase
+class RegisterOrganizationTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
     /** @test */
-    public function org_registration_accepts_org_name_channel_format_address_command_package_user_and_returns_campaign()
+    public function register_organization_action_accepts_org_name_channel_format_address_command_package_user_and_returns_campaign()
     {
         /*** arrange ***/
         $orgName = $this->faker->company();
@@ -31,7 +33,7 @@ class OrgRegistrationTest extends TestCase
         $user = User::factory()->create();
 
         /*** act ***/
-        $campaign = OrgRegistration::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
+        $campaign = RegisterOrganization::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
 
         /*** assert ***/
         $this->assertInstanceOf(Campaign::class, $campaign);
@@ -46,7 +48,7 @@ class OrgRegistrationTest extends TestCase
     }
 
     /** @test */
-    public function org_registration_end_point()
+    public function register_organization_action_end_point()
     {
         /*** arrange ***/
         $orgName = $this->faker->company();
@@ -81,5 +83,25 @@ class OrgRegistrationTest extends TestCase
             $this->assertSame($package->code, $campaign->package->code);
             $this->assertTrue($user->is($campaign->repository->organization->admin));
         });
+    }
+
+    /** @test */
+    public function org_registration_should_send_notification()
+    {
+        /*** arrange ***/
+        Notification::fake();
+        $orgName = $this->faker->company();
+        $channelEnum = ChannelEnum::random();
+        $formatEnum = FormatEnum::random();
+        $address = $this->faker->url();
+        $command = $this->faker->text(20);
+        $package = Package::factory()->create();
+        $user = User::factory()->create();
+
+        /*** act ***/
+        RegisterOrganization::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
+
+        /*** assert ***/
+        Notification::assertSentTo($user, SendRegisterUserNotification::class);
     }
 }

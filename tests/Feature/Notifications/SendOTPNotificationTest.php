@@ -27,10 +27,10 @@ class SendOTPNotificationTest extends TestCase
 
         /*** assert ***/
         Notification::assertSentTo($user, function(SendOTPNotification $notification) use ($user, $pin) {
-            $mobile = null; $mode = null; $message = null;
+            $mobile = null; $mode = null; $content = null;
             extract($notification->toArray($user));
 
-            return $mobile == $user->mobile && $mode == 'sms' && $message = trans('domain.verify', ['pin' => $pin]);
+            return $mobile == $user->mobile && $mode == 'sms' && $content == trans('domain.verify', ['pin' => $pin]);
         });
     }
 

@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Contact;
+use App\Models\Organization;
 use App\Observers\ContactObserver;
 use Illuminate\Support\Facades\Event;
+use App\Observers\OrganizationObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +20,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $observers = [
         Contact::class => [ContactObserver::class],
+        Organization::class => [OrganizationObserver::class],
     ];
 
     /**

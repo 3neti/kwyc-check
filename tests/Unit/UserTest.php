@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\UserSeeder;
+use App\Models\OrganizationUser;
+use App\Models\Organization;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -182,5 +184,49 @@ class UserTest extends TestCase
 
         /*** assert ***/
         $this->assertTrue($user->verified());
+    }
+
+    /** @test */
+    public function user_can_have_many_organizations_with_default_active()
+    {
+        /*** assert ***/
+        $user = User::factory()->create();
+        [$organization1, $organization2, $organization3] = Organization::factory(3)->create();
+
+        /*** arrange ***/
+        $user->organizations()->attach($organization1, ['active' => false]);
+        $user->organizations()->attach($organization2);
+
+        /*** act ***/
+        $this->assertDatabaseHas(OrganizationUser::class, [
+            'user_id' => $user->id,
+            'organization_id' => $organization1->id,
+            'active' => false
+        ]);
+        $this->assertDatabaseHas(OrganizationUser::class, [
+            'user_id' => $user->id,
+            'organization_id' => $organization2->id,
+            'active' => true
+        ]);
+        $this->assertDatabaseMissing(OrganizationUser::class, [
+            'user_id' => $user->id,
+            'organization_id' => $organization3->id,
+        ]);
+    }
+
+    /** @test */
+    public function user_must_have_unique_organizations()
+    {
+        /*** assert ***/
+        $this->expectExceptionCode(23000);
+
+        /*** arrange ***/
+        $user = User::factory()->create();
+        [$organization1, $organization2] = Organization::factory(2)->create();
+        $user->organizations()->attach($organization1);
+        $user->organizations()->attach($organization2);
+
+        /*** act ***/
+        $user->organizations()->attach($organization1);
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Actions\OrgRegistration;
+use App\Actions\RegisterOrganization;
+use App\Actions\RegisterUser;
 use Illuminate\Http\Request;
 
 /*
@@ -19,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/register-user/{org}', RegisterUser::class);
+
 Route::group(['middleware' => ['auth:sanctum']], function ($route) {
-    $route->post('/register-organization', OrgRegistration::class);
+    $route->post('/register-organization', RegisterOrganization::class);
 });
