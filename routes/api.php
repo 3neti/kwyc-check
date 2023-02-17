@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Actions\RegisterOrganization;
 use App\Actions\RegisterUser;
 use Illuminate\Http\Request;
+use App\Actions\TopupUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +25,5 @@ Route::post('/register-user/{org}', RegisterUser::class);
 
 Route::group(['middleware' => ['auth:sanctum']], function ($route) {
     $route->post('/register-organization', RegisterOrganization::class);
+    $route->post('/topup-user', TopupUser::class);
 });

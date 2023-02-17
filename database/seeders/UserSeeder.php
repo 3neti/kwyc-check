@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
@@ -15,10 +16,10 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $name = 'Lester Hurtado';
-        $email = '3neti@lyflyn.net';
-        $password = bcrypt('password');
-
-        User::create(compact('name', 'email', 'password'));
+        tap(app(CreateNewUser::class)->create($attrib = config('domain.seed.user.system')), function (User $system) use ($attrib) {
+            $system->mobile = $attrib['mobile'];
+            $system->save();
+            $system->depositFloat(1000000);
+        });
     }
 }

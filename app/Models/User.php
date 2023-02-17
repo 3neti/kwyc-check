@@ -23,6 +23,8 @@ use App\Traits\Verifiable;
 use App\Traits\HasMobile;
 use App\Traits\HasData;
 
+use Illuminate\Support\Arr;
+
 class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
 {
     use HasApiTokens;
@@ -74,6 +76,13 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
     protected $appends = [
         'profile_photo_url',
     ];
+
+    static public function getSystem(): User
+    {
+        $attribs = Arr::only(config('domain.seed.user.system'), ['email']);
+
+        return static::where($attribs)->first();
+    }
 
     public function organizations(): BelongsToMany
     {

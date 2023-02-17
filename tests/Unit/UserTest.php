@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\UserSeeder;
 use App\Models\OrganizationUser;
 use App\Models\Organization;
+use Illuminate\Support\Arr;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -26,20 +27,17 @@ class UserTest extends TestCase
     /** @test */
     public function users_table_has_a_seeder()
     {
+        /*** arrange ***/
+        $attribs = Arr::only(config('domain.seed.user.system'), ['name', 'email', 'mobile']);
+
         /*** assert ***/
-        $this->assertDatabaseMissing('users', [
-            'name' => 'Lester Hurtado',
-            'email' => '3neti@lyflyn.net',
-        ]);
+        $this->assertDatabaseMissing('users', $attribs);
 
         /*** act ***/
         $this->seed(UserSeeder::class);
 
         /*** assert ***/
-        $this->assertDatabaseHas('users', [
-            'name' => 'Lester Hurtado',
-            'email' => '3neti@lyflyn.net',
-        ]);
+        $this->assertDatabaseHas('users', $attribs);
     }
 
     /** @test */
