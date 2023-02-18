@@ -19,6 +19,7 @@
         "lorisleiva/laravel-actions": "^2.5",
         "moirei/laravel-vouchers": "^3.0",
         "spatie/laravel-schemaless-attributes": "^2.4",
+        "spatie/laravel-webhook-client": "^3.1",
         "spomky-labs/otphp": "^11.1",
         "tightenco/ziggy": "^1.0"
     },

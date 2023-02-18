@@ -36,3 +36,5 @@ Route::middleware([
         return Inertia::render('RegisterUser', compact('org_id'));
     })->name('register-user');
 });
+
+Route::webhooks('webhook-paynamics-paybiz', 'paynamics-paybiz');

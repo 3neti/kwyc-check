@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d6a5fb88c1926cf2934b089815440ec4",
+    "content-hash": "46b8a40a2ee00ab91179f014eb05cdf3",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -5389,6 +5389,79 @@
                 }
             ],
             "time": "2023-01-14T20:58:52+00:00"
+        },
+        {
+            "name": "spatie/laravel-webhook-client",
+            "version": "3.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-webhook-client.git",
+                "reference": "52635a661be67dbcbfc7fdf736c543ab4429d0e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-webhook-client/zipball/52635a661be67dbcbfc7fdf736c543ab4429d0e0",
+                "reference": "52635a661be67dbcbfc7fdf736c543ab4429d0e0",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/bus": "^8.50|^9.0|^10.0",
+                "illuminate/database": "^8.50|^9.0|^10.0",
+                "illuminate/support": "^8.50|^9.0|^10.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.11"
+            },
+            "require-dev": {
+                "nunomaduro/larastan": "^1.0.4|^2.2",
+                "orchestra/testbench": "^6.0|^7.0|^8.0",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.3",
+                "spatie/laravel-ray": "^1.24"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\WebhookClient\\WebhookClientServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\WebhookClient\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Receive webhooks in Laravel apps",
+            "homepage": "https://github.com/spatie/laravel-webhook-client",
+            "keywords": [
+                "laravel-webhook-client",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-webhook-client/issues",
+                "source": "https://github.com/spatie/laravel-webhook-client/tree/3.1.7"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2023-01-17T10:35:34+00:00"
         },
         {
             "name": "spomky-labs/otphp",
