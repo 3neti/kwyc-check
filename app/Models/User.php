@@ -83,7 +83,7 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
     static public function getSystem(): User
     {
         $attribs = Arr::only(config('domain.seed.user.system'), ['email']);
-        Arr::set($attribs, 'email', decrypt($attribs['email']));
+//        Arr::set($attribs, 'email', decrypt($attribs['email']));
 
         return static::where($attribs)->first();
     }
