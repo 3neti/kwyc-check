@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use App\Classes\Phone;
+use Illuminate\Database\Eloquent\Builder;
+
 trait HasMobile
 {
     public function initializeHasMobile()
@@ -25,4 +28,16 @@ trait HasMobile
 
         return $this->{$field};
     }
+
+    public function scopeWithMobile(Builder $query, string $mobile): void
+    {
+        $query->where('mobile', Phone::number($mobile));
+    }
+
+    static public function fromMobile($mobile): ?self
+    {
+        return self::withMobile($mobile)->first();
+    }
+
+
 }

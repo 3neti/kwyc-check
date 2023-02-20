@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\UserSeeder;
 use App\Models\OrganizationUser;
 use App\Models\Organization;
@@ -13,7 +12,7 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use RefreshDatabase;
 
     /** @var User  */
     protected User $user;
@@ -29,6 +28,9 @@ class UserTest extends TestCase
     {
         /*** arrange ***/
         $attribs = Arr::only(config('domain.seed.user.system'), ['name', 'email', 'mobile']);
+        foreach ($attribs as $key => $value) {
+            $attribs[$key] = decrypt($value);
+        }
 
         /*** assert ***/
         $this->assertDatabaseMissing('users', $attribs);
@@ -73,7 +75,7 @@ class UserTest extends TestCase
         /*** arrange ***/
         $initial_deposit = $this->faker->numberBetween(1000,100000);
         $this->user->deposit($initial_deposit);
-        $user2 = User::factory()->createQuietly();
+        $user2 = User::factory()->create();
         $transfer_amount = $this->faker->numberBetween(10,100);
         $balance_amount = $initial_deposit - $transfer_amount;
 
@@ -117,7 +119,7 @@ class UserTest extends TestCase
 
         /*** act ***/
         $wallet1 = $this->user->createWallet($attribs);
-        $wallet2 = tap(User::factory()->createQuietly()->createWallet($attribs))
+        $wallet2 = tap(User::factory()->create()->createWallet($attribs))
             ->deposit($initial_deposit);
         $wallet2->transfer($wallet1, $transfer_amount);
 
@@ -143,8 +145,8 @@ class UserTest extends TestCase
     public function user_accepts_mobile()
     {
         /*** arrange ***/
-        $user = User::factory()->create();
-        $mobile = '+639171234567';
+        $user = User::factory()->create(['mobile' => null]);
+        $mobile = $this->faker->mobileNumber;
 
         /*** assert ***/
         $this->assertDatabaseHas('users', [
@@ -159,7 +161,7 @@ class UserTest extends TestCase
         /*** assert ***/
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'mobile' => $mobile
+            'mobile' => $user->mobile
         ]);
     }
 
@@ -226,5 +228,17 @@ class UserTest extends TestCase
 
         /*** act ***/
         $user->organizations()->attach($organization1);
+    }
+
+    /** @test */
+    public function user_from_mobile()
+    {
+        /*** act ***/
+        /*** arrange ***/
+        $user = User::factory()->create();
+        $mobile = $user->mobile;
+
+        /*** assert ***/
+        $this->assertTrue($user->is(User::fromMobile($mobile)));
     }
 }

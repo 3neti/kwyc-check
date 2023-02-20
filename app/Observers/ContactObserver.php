@@ -2,7 +2,9 @@
 
 namespace App\Observers;
 
+use App\Classes\Phone;
 use App\Models\Contact;
+use function PHPUnit\Framework\isEmpty;
 
 class ContactObserver
 {
@@ -14,7 +16,9 @@ class ContactObserver
      */
     public function creating(Contact $contact)
     {
-        $contact->handle = $contact->handle ?? $contact->mobile;
+        if (! $contact->getAttribute('handle')) {
+            $contact->setAttribute('handle', Phone::number($contact->getAttribute('mobile')));
+        }
     }
 
     /**
@@ -37,6 +41,19 @@ class ContactObserver
     public function updated(Contact $contact)
     {
         //
+    }
+
+    /**
+     * Handle the Contact "saving" event.
+     *
+     * @param  \App\Models\Contact  $contact
+     * @return void
+     */
+    public function saving(Contact $contact)
+    {
+        if ($contact->isDirty('mobile') && $mobile = $contact->getAttribute('mobile')) {
+            $contact->setAttribute('mobile', Phone::number($mobile));
+        }
     }
 
     /**

@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(UserSeeder::class);
-        \LBHurtado\SMS\Facades\SMS::channel("engagespark")->from('TXTCMDR')->to('+639173011987')->content('db:seed')->send();
+//        \LBHurtado\SMS\Facades\SMS::channel("engagespark")->from('TXTCMDR')->to('+639173011987')->content('db:seed')->send();
 
 //        $this->call(OrganizationSeeder::class);
 //        $this->call(ProductSeeder::class);

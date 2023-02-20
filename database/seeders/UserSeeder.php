@@ -16,8 +16,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        tap(app(CreateNewUser::class)->create($attrib = config('domain.seed.user.system')), function (User $system) use ($attrib) {
-            $system->mobile = $attrib['mobile'];
+        $attribs = config('domain.seed.user.system');
+        foreach ($attribs as $key => $value) {
+            $attribs[$key] = decrypt($value);
+        }
+        tap(app(CreateNewUser::class)->create($attribs), function (User $system) use ($attribs) {
+            $system->mobile = $attribs['mobile'];
             $system->save();
             $system->depositFloat(1000000);
         });

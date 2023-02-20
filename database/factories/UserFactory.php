@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Laravel\Jetstream\Features;
+use Illuminate\Support\Str;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use Laravel\Jetstream\Features;
 
 class UserFactory extends Factory
 {
@@ -27,6 +27,7 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
+            'mobile' => '091' . $this->faker->randomNumber(1) . $this->faker->numberBetween(1000000, 9999999),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'two_factor_secret' => null,

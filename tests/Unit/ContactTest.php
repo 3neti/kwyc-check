@@ -20,7 +20,7 @@ class ContactTest extends TestCase
 
         /*** arrange ***/
         $contact = Contact::make();
-        $contact->handle = $this->faker->e164PhoneNumber();
+        $contact->handle = $this->faker->name();
         $contact->data = $this->faker->rgbColorAsArray();
 
         /*** act ***/
@@ -31,7 +31,7 @@ class ContactTest extends TestCase
     public function contact_accepts_mobile_handle_and_data()
     {
         /*** arrange ***/
-        $mobile = $this->faker->e164PhoneNumber();
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
         $handle = $this->faker->name();
         $data = $this->faker->rgbColorAsArray();
 
@@ -40,7 +40,7 @@ class ContactTest extends TestCase
 
         /*** assert ***/
         $this->assertDatabaseHas('contacts', [
-            'mobile' => $mobile,
+            'mobile' => phone($mobile, 'PH')->formatE164(),
             'handle' => $handle,
         ]);
         $this->assertSame($data, $contact->data->toArray());
@@ -50,20 +50,23 @@ class ContactTest extends TestCase
     public function contact_default_handle_is_mobile()
     {
         /*** arrange ***/
-        $mobile = $this->faker->e164PhoneNumber();
-
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
         /*** act ***/
         $contact = Contact::factory()->create(compact('mobile'));
 
         /*** assert ***/
-        $this->assertSame($mobile, $contact->handle);
+        $this->assertSame(phone($mobile, 'PH')->formatE164(), $contact->handle);
     }
 
     /** @test */
     public function contact_can_be_verified_via_otp()
     {
         /*** arrange ***/
-        $contact = Contact::factory()->create(['mobile_verified_at' => null]);
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
+        $contact = Contact::factory()->create([
+            'mobile' => $mobile,
+            'mobile_verified_at' => null
+        ]);
 
         /*** assert ***/
         $this->assertFalse($contact->verified());
@@ -78,5 +81,18 @@ class ContactTest extends TestCase
 
         /*** assert ***/
         $this->assertTrue($contact->verified());
+    }
+
+    /** @test */
+    public function contact_from_mobile()
+    {
+        /*** arrange ***/
+        $mobile = '09171234567';
+
+        /*** act ***/
+        $contact = Contact::factory()->create(compact('mobile'));
+
+        /*** assert ***/
+        $this->assertTrue($contact->is(Contact::fromMobile($mobile)));
     }
 }

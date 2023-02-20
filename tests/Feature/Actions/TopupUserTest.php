@@ -41,13 +41,14 @@ class TopupUserTest extends TestCase
     public function topup_user_action_end_point()
     {
         /*** arrange ***/
-        $user = User::factory()->create(['mobile' => $this->faker->e164PhoneNumber()]);
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
+        $user = User::factory()->create(['mobile' => $mobile]);
         $amount = $this->faker->randomFloat(2,100, 1000);
         $token = User::factory()->create()->createToken('mobile')->plainTextToken;
 
         /*** act ***/
         $response = $this->postJson("/api/topup-user", [
-            'mobile' => $user->mobile,
+            'mobile' => $mobile,
             'amount' => $amount
         ], [
             'Authorization' => 'Bearer ' . $token

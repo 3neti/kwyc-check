@@ -13,7 +13,7 @@ class RegisterUser
 
     public function handle(Organization $organization, array $attribs): User
     {
-        $user = User::create($attribs);
+        $user = User::create($attribs);//TODO: change this findOrCreate
         $user->organizations()->attach($organization);
 
         return $user;

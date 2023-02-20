@@ -3,6 +3,10 @@
 namespace App\Handlers;
 
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob;
+use Illuminate\Support\Arr;
+use App\Actions\TopupUser;
+use App\Models\User;
+
 
 class WebhookJobHandlerForPaynamicsPaybiz extends ProcessWebhookJob
 {
@@ -13,11 +17,26 @@ class WebhookJobHandlerForPaynamicsPaybiz extends ProcessWebhookJob
      */
     public int $timeout = 120;
 
+    protected User $user;
+
     public function handle()
     {
-        //You can perform an heavy logic here
-        logger($this->webhookCall);
-        sleep(10);
-        logger("I am done");
+        $amount = Arr::get($this->getPayloadCustomerInfo(), 'amount');
+        $this->user = User::eurekaPersist($this->getPayloadCustomerInfo());
+
+        logger('start');
+        logger($this->user);
+        logger(TopupUser::run($this->user, $amount));
+        logger('end');
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    protected function getPayloadCustomerInfo(): array
+    {
+        return Arr::get($this->webhookCall, 'payload.customer_info');
     }
 }

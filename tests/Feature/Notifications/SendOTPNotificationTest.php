@@ -19,7 +19,8 @@ class SendOTPNotificationTest extends TestCase
     {
         /*** arrange ***/
         Notification::fake();
-        $user = User::factory()->create();
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
+        $user = User::factory()->create(['mobile' => $mobile]);
         $pin = $this->faker->text(5);
 
         /*** act ***/
@@ -30,7 +31,7 @@ class SendOTPNotificationTest extends TestCase
             $mobile = null; $mode = null; $content = null;
             extract($notification->toArray($user));
 
-            return $mobile == $user->mobile && $mode == 'sms' && $content == trans('domain.verify', ['pin' => $pin]);
+            return phone($mobile, 'PH')->formatE164() == $user->mobile && $mode == 'sms' && $content == trans('domain.verify', ['pin' => $pin]);
         });
     }
 
@@ -39,7 +40,8 @@ class SendOTPNotificationTest extends TestCase
     {
         /*** arrange ***/
         Notification::fake();
-        $contact = Contact::factory()->create();
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
+        $contact = Contact::factory()->create(['mobile' => $mobile]);
         $pin = $this->faker->text(5);
 
         /*** act ***/
@@ -50,7 +52,7 @@ class SendOTPNotificationTest extends TestCase
             $mobile = null; $mode = null; $message = null;
             extract($notification->toArray($contact));
 
-            return $mobile == $contact->mobile && $mode == 'sms' && $message = trans('domain.verify', ['pin' => $pin]);
+            return phone($mobile, 'PH')->formatE164() == $contact->mobile && $mode == 'sms' && $message = trans('domain.verify', ['pin' => $pin]);
         });
     }
 }

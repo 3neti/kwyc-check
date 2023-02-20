@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Actions\Fortify\CreateNewUser;
+use App\Classes\Phone;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use MOIREI\Vouchers\Traits\CanRedeemVouchers;
 use Bavix\Wallet\Interfaces\Confirmable;
@@ -80,6 +83,7 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
     static public function getSystem(): User
     {
         $attribs = Arr::only(config('domain.seed.user.system'), ['email']);
+        Arr::set($attribs, 'email', decrypt($attribs['email']));
 
         return static::where($attribs)->first();
     }
@@ -89,5 +93,34 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
         return $this->belongsToMany(Organization::class)
             ->withPivot('active')
             ->withTimestamps();
+    }
+
+    static public function eurekaPersist(array $attribs, array $needles = ['email', 'mobile']): User
+    {
+        $validator = Validator::make($attribs, [
+            'name' => 'required',
+            'email' => 'required|email',
+            'mobile' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            throw new \Exception('Validation fails');
+        }
+
+        $attribs = $validator->validated();
+        foreach ($needles as $needle) {
+            $attrib = $attribs[$needle];
+            $user = match ($needle) {
+                'mobile' => self::fromMobile($attrib),
+                default => self::where($needle, $attrib)->first(),
+            };
+        }
+        $attribs = array_merge($attribs, config('domain.default.user.attribs'));
+
+        return $user ?? tap(app(CreateNewUser::class)->create($attribs), function (User $user) use ($attribs) {
+
+            $user->setAttribute('mobile', $attribs['mobile']);
+            $user->save();
+        });
     }
 }

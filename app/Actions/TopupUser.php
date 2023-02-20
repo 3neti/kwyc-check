@@ -30,14 +30,14 @@ class TopupUser
     public function asController(ActionRequest $request): Wallet
     {
         $data = $request->all();
-        $user = $this->getUserFromMobile($data['mobile']);
+        $user = User::fromMobile($data['mobile']);
         $amount = $data['amount'];
 
         return $this->handle($user, $amount);
     }
 
-    protected function getUserFromMobile(string $mobile): User
+    public function asJob(User $user, float $amount): void
     {
-        return User::where(compact('mobile'))->first();
+        $this->handle($user, $amount);
     }
 }

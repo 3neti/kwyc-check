@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Models\Contact;
 use App\Models\Organization;
+use App\Observers\UserObserver;
 use App\Observers\ContactObserver;
 use Illuminate\Support\Facades\Event;
 use App\Observers\OrganizationObserver;
@@ -19,6 +21,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $observers = [
+        User::class => [UserObserver::class],
         Contact::class => [ContactObserver::class],
         Organization::class => [OrganizationObserver::class],
     ];

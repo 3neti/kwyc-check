@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\OrganizationUser;
 use App\Actions\RegisterUser;
 use App\Models\Organization;
+use Illuminate\Support\Arr;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -20,10 +21,11 @@ class RegisterUserTest extends TestCase
     {
         /*** arrange ***/
         $organization = Organization::factory()->create();
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
         $attributes = [
             'name' => $this->faker->name(),
             'email' => $this->faker->email(),
-            'mobile' => $this->faker->e164PhoneNumber(),
+            'mobile' => $mobile,
             'password' => $this->faker->password(),
         ];
 
@@ -35,6 +37,7 @@ class RegisterUserTest extends TestCase
             'organization_id' => $organization->id,
             'user_id' => $user->id,
         ]);
+        Arr::set($attributes, 'mobile', phone($mobile, 'PH')->formatE164());
         $this->assertEmpty(array_diff($attributes, $user->getAttributes()));
     }
 
@@ -43,10 +46,11 @@ class RegisterUserTest extends TestCase
     {
         /*** arrange ***/
         $organization = Organization::factory()->create();
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
         $attributes = [
             'name' => $this->faker->name(),
             'email' => $this->faker->email(),
-            'mobile' => $this->faker->e164PhoneNumber(),
+            'mobile' => $mobile,
             'password' => $this->faker->password(),
         ];
 
@@ -58,7 +62,7 @@ class RegisterUserTest extends TestCase
 
         /*** assert ***/
         $response->assertSuccessful();
-        $user = User::where($attributes)->first();
+        $user = User::fromMobile($mobile);
         $this->assertDatabaseHas(OrganizationUser::class, [
             'organization_id' => $organization->id,
             'user_id' => $user->id,

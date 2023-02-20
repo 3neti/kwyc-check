@@ -19,7 +19,8 @@ class SendRegisterUserNotificationTest extends TestCase
     {
         /*** arrange ***/
         Notification::fake();
-        $user = User::factory()->create(['mobile' => $this->faker->e164PhoneNumber()]);
+        $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
+        $user = User::factory()->create(['mobile' => $mobile]);
         $campaign = Campaign::factory()->create();
 
         /*** act ***/
