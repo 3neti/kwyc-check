@@ -10,7 +10,18 @@ enum ChannelEnum:string {
     case SMS = 'SMS';
     case WEB_HOOK = 'Web Hook';
 
-    static function random() {
-        return self:: from(Arr::random(array_column(ChannelEnum::cases(),'value')));
+    static function random(): self {
+        return self:: from(Arr::random(array_column(self::cases(),'value')));
+    }
+
+    static function values(): array {
+        return array_map(
+            fn (self $item) => $item->value,
+            self::cases()
+        );
+    }
+
+    static function default(): self {
+        return self::SMS;
     }
 }

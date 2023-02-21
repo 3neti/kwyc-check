@@ -47,7 +47,7 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
      * @var string<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password'
+        'name', 'email', 'mobile', 'password'
     ];
 
     /**

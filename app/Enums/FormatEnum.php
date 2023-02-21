@@ -10,7 +10,18 @@ enum FormatEnum:string {
     case XLS = 'Excel';
     case SQL = 'SQL';
 
-    static function random() {
-        return self:: from(Arr::random(array_column(FormatEnum::cases(),'value')));
+    static function random(): self {
+        return self:: from(Arr::random(array_column(self::cases(),'value')));
+    }
+
+    static function values(): array {
+        return array_map(
+            fn (self $item) => $item->value,
+            self::cases()
+        );
+    }
+
+    static function default(): self {
+        return self::TXT;
     }
 }
