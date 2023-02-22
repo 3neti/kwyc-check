@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use App\Actions\RegisterOrganization;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Enum;
+use App\Models\Organization;
+use Illuminate\Http\Request;
 use App\Enums\ChannelEnum;
 use App\Enums\FormatEnum;
 use App\Models\Package;
-use Illuminate\Http\RedirectResponse;
-use App\Models\Organization;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Enum;
-use Inertia\Inertia;
 use Inertia\Response;
-use App\Actions\RegisterOrganization;
+use Inertia\Inertia;
 
 class OrganizationController extends Controller
 {
@@ -28,8 +29,6 @@ class OrganizationController extends Controller
             'formats' => FormatEnum::values(),
             'pkgs' => Package::all(),
         ]);
-
-
     }
 
     /**

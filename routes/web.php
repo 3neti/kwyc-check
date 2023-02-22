@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\WalletController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,8 +38,8 @@ Route::middleware([
         return Inertia::render('RegisterUser', compact('org_id'));
     })->name('register-user');
     Route::resource('organizations', OrganizationController::class)
-        ->only(['index', 'store', 'update'])
-        ->middleware(['auth', 'verified']);
+        ->only(['index', 'store', 'update']);
+    Route::get('/wallet', WalletController::class);
 });
 
 Route::webhooks('webhook-paynamics-paybiz', 'paynamics-paybiz');
