@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Package;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
+use App\Actions\RegisterOrganization;
 use Illuminate\Database\Seeder;
-use App\Helpers\DataHelper;
+use Illuminate\Support\Arr;
+use App\Models\User;
 
 class OrganizationSeeder extends Seeder
 {
@@ -16,14 +18,10 @@ class OrganizationSeeder extends Seeder
      */
     public function run()
     {
-        $organizations = DataHelper::organizations();
+        $user = User::getSystem();
+        $attribs = config('domain.seed.organization');
+        Arr::set( $attribs, 'package', Package::where('code', Arr::get($attribs,'package'))->first());
 
-        foreach ($organizations as $organization) {
-            $data = [];
-            $data['name'] = $organization['name'];
-            $data['admin_id'] = $organization['admin_id'];
-
-            DB::table('organizations')->insert($data);
-        }
+        RegisterOrganization::run($user, ...$attribs);
     }
 }

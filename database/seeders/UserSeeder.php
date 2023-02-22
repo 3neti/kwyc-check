@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
 //        foreach ($attribs as $key => $value) {
 //            $attribs[$key] = decrypt($value);
 //        }
+
         tap(app(CreateNewUser::class)->create($attribs), function (User $system) use ($attribs) {
             $system->mobile = $attribs['mobile'];
             $system->save();

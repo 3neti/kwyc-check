@@ -1,14 +1,14 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
+
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Organization from '@/Components/Organization.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DropDown from '@/Components/Dropdown.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import {useForm, Head} from "@inertiajs/vue3";
 
-// defineProps(['organizations']);
 defineProps({organizations: Object, channels: Array, formats: Array, pkgs: Object});
 
 const form = useForm({

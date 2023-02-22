@@ -24,6 +24,14 @@ return [
                 'terms' => true
             ],
         ],
+        'organization' => [
+            'name' => env('KWYC_CHECK_ORGANIZATION_NAME',  '3neti Research & Development OPC'),
+            'channel' => \App\Enums\ChannelEnum::default(),
+            'format' => \App\Enums\FormatEnum::default(),
+            'address' => env('KWYC_CHECK_ADDRESS',  'https://3neti.com/web_hooks'),
+            'command' => env('KWYC_CHECK_COMMAND',  'command'),
+            'package' => env('KWYC_CHECK_PACKAGE',  'registration'),
+        ],
     ],
     'default' => [
         'user' => [

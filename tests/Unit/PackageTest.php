@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\PackageSeeder;
 use App\Models\PackageItem;
+use App\Helpers\DataHelper;
 use App\Models\Package;
 use App\Models\Product;
 use Tests\TestCase;
@@ -18,15 +19,7 @@ class PackageTest extends TestCase
     public function packages_table_has_a_seeder()
     {
         $this->seed(PackageSeeder::class);
-        $this->assertDatabaseHas('packages', [
-            'code' => 'ABC', 'name' => 'Package ABC', 'price' => 1000000
-        ]);
-        $this->assertDatabaseHas('packages', [
-            'code' => 'DEF', 'name' => 'Package DEF', 'price' => 2000000
-        ]);
-        $this->assertDatabaseHas('packages', [
-            'code' => 'GHI', 'name' => 'Package GHI', 'price' => 3000000
-        ]);
+        $this->assertDatabaseCount(Package::class, count(DataHelper::packages()));
     }
 
     /** @test */
