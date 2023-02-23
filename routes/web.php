@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -39,7 +40,9 @@ Route::middleware([
     })->name('register-user');
     Route::resource('organizations', OrganizationController::class)
         ->only(['index', 'store', 'update']);
-    Route::get('/wallet', WalletController::class);
+    Route::get('/wallet', WalletController::class)->name('wallet.index');
+    Route::resource('campaigns', CampaignController::class)
+        ->only(['index', 'store', 'update']);
 });
 
 Route::webhooks('webhook-paynamics-paybiz', 'paynamics-paybiz');
