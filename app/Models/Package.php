@@ -10,7 +10,7 @@ class Package extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'name', 'price'];
+    protected $fillable = ['code', 'name', 'price', 'channel'];
 
     protected $casts = [
         'price' => 'float',
@@ -23,6 +23,6 @@ class Package extends Model
 
     public function packageItems(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(PackageItem::class);
     }
 }

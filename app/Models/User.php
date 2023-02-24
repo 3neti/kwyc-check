@@ -116,6 +116,9 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
             };
         }
         $attribs = array_merge($attribs, config('domain.default.user.attribs'));
+        Arr::set($attribs,'password', $password = Arr::get($attribs, 'password'));
+        Arr::set($attribs,'password_confirmation', $password);
+        Arr::set($attribs,'terms', true);
 
         return $user ?? tap(app(CreateNewUser::class)->create($attribs), function (User $user) use ($attribs) {
 

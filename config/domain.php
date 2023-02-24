@@ -36,9 +36,7 @@ return [
     'default' => [
         'user' => [
             'attribs' => [
-                'password' => '$2y$10$DMfjP1twBt74819QVtQU/uXaPJa.Ac.dUEsIW/QjBw.Ex8xEZ3V0G',
-                'password_confirmation' => '$2y$10$DMfjP1twBt74819QVtQU/uXaPJa.Ac.dUEsIW/QjBw.Ex8xEZ3V0G',
-                'terms' => true,
+                'password' => env('KWYC_CHECK_USER_PASSWORD', '#Password1'),
             ],
         ],
     ],

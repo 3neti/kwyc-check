@@ -21,6 +21,28 @@ enum ChannelEnum:string {
         );
     }
 
+    static function toArray(): array {
+        $array = [];
+        foreach (self::cases() as $case) {
+            $array[$case->name] = $case->value;
+        }
+
+        return $array;
+    }
+
+    static function toFlippedArray(): array {
+        return array_flip(self::toArray());
+    }
+
+    static function novaOptions(): array {
+        $array = [];
+        foreach (self::cases() as $case) {
+            $array[$case->value] = $case->value;
+        }
+
+        return $array;
+    }
+
     static function default(): self {
         return self::SMS;
     }

@@ -24,10 +24,7 @@ class WebhookJobHandlerForPaynamicsPaybiz extends ProcessWebhookJob
         $amount = Arr::get($this->getPayloadCustomerInfo(), 'amount');
         $this->user = User::eurekaPersist($this->getPayloadCustomerInfo());
 
-        logger('start');
-        logger($this->user);
         logger(TopupUser::run($this->user, $amount));
-        logger('end');
     }
 
     public function getUser(): User

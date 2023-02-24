@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Classes\Phone;
 use App\Models\User;
+use Laravel\Nova\Notifications\NovaNotification;
 
 class UserObserver
 {
@@ -15,7 +16,13 @@ class UserObserver
      */
     public function created(User $user)
     {
-        //
+//        foreach (User::all() as $u) {
+//            $u->notify(NovaNotification::make()
+//                ->message('New User: ' . $user->name)
+//                ->icon('user')
+//                ->type('success')
+//            );
+//        }
     }
 
     /**

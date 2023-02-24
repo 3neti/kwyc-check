@@ -23,4 +23,6 @@ class Repository extends Model
     {
         return $this->belongsTo(Organization::class);
     }
+
+
 }

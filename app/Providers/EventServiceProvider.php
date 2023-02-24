@@ -8,8 +8,12 @@ use App\Models\Organization;
 use App\Observers\UserObserver;
 use App\Observers\ContactObserver;
 use Illuminate\Support\Facades\Event;
-use App\Observers\OrganizationObserver;
 use Illuminate\Auth\Events\Registered;
+use App\Observers\OrganizationObserver;
+use App\Listeners\BalanceUpdatedListener;
+use App\Listeners\TransactionCreatedListener;
+use Bavix\Wallet\Internal\Events\TransactionCreatedEvent;
+use Bavix\Wallet\Internal\Events\BalanceUpdatedEventInterface;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -34,6 +38,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        BalanceUpdatedEventInterface::class => [
+            BalanceUpdatedListener::class
+        ],
+        TransactionCreatedEvent::class => [
+            TransactionCreatedListener::class
         ],
     ];
 

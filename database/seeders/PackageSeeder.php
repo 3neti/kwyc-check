@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use App\Helpers\DataHelper;
+use Illuminate\Support\Str;
 
 class PackageSeeder extends Seeder
 {
@@ -20,7 +21,7 @@ class PackageSeeder extends Seeder
 
         foreach ($packages as $package) {
             $data = [];
-            $data['code'] = $package['code'];
+            $data['code'] = Str::slug($package['name']);
             $data['name'] = $package['name'];
             $data['price'] = $package['price'];
 

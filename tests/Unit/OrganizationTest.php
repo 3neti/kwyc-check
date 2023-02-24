@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\OrganizationUser;
+use App\Models\Repository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\OrganizationSeeder;
@@ -126,5 +127,18 @@ class OrganizationTest extends TestCase
             'organization_id' => $organization->id,
             'user_id' => $admin->id,
         ]);
+    }
+
+    /** @test */
+    public function organization_has_many_repositories()
+    {
+        /*** arrange ***/
+        $organization = Organization::factory()->create();
+
+        /*** act ***/
+        Repository::factory(3)->create(['organization_id' => $organization->id]);
+
+        /*** assert ***/
+        $this->assertCount(3, $organization->repositories);
     }
 }
