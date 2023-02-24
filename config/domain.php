@@ -40,5 +40,20 @@ return [
             ],
         ],
     ],
-
+    'hyperverge' => [
+        'api' => [
+            'id' => env('HYPERVERGE_API_ID'),
+            'key' => env('HYPERVERGE_API_KEY'),
+            'expiry' => env('HYPERVERGE_API_EXPIRY', 300),
+            'url' => [
+                'login' => env('HYPERVERGE_API_URL_LOGIN', 'https://auth.hyperverge.co/login'),
+                'kyc' => env('HYPERVERGE_API_URL_KYC', 'https://ind.idv.hyperverge.co/v1/link-kyc/start'),
+                'result' => env('HYPERVERGE_API_URL_RESULT', 'https://ind.idv.hyperverge.co/v1/link-kyc/results'),
+            ],
+        ],
+        'url' => [
+            'workflow' => env('HYPERVERGE_URL_WORKFLOW', 'default'),
+            'redirect' => env('HYPERVERGE_URL_REDIRECT', 'http://localhost'),
+        ],
+    ],
 ];
