@@ -39,5 +39,12 @@ trait HasMobile
         return self::withMobile($mobile)->first();
     }
 
+    static public function authorizationFromMobile($mobile, &$user): string
+    {
+        $user = static::fromMobile($mobile);
+
+        return 'Bearer ' . $user->createToken('mobile')->plainTextToken;
+    }
+
 
 }

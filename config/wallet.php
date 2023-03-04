@@ -186,7 +186,7 @@ return [
         'default' => [
             'name' => 'Default Wallet',
             'slug' => 'default',
-            'meta' => [],
+            'meta' => ['currency' => 'PHP'],
         ],
     ],
 ];

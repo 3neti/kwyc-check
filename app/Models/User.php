@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Actions\NewCheckin;
 use App\Classes\Phone;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -120,10 +121,12 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
         Arr::set($attribs,'password_confirmation', $password);
         Arr::set($attribs,'terms', true);
 
-        return $user ?? tap(app(CreateNewUser::class)->create($attribs), function (User $user) use ($attribs) {
+        return $user ?? app(CreateNewUser::class)->create($attribs);
+    }
 
-            $user->setAttribute('mobile', $attribs['mobile']);
-            $user->save();
-        });
+    public function checkin()
+    {
+        $checkin = NewCheckin::run($this);
+        $this->notify();
     }
 }

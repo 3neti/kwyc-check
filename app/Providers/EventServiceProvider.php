@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\OnboardAgentToOrganization;
 use App\Models\User;
 use App\Models\Contact;
 use App\Models\Organization;
@@ -16,6 +17,7 @@ use Bavix\Wallet\Internal\Events\TransactionCreatedEvent;
 use Bavix\Wallet\Internal\Events\BalanceUpdatedEventInterface;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use MOIREI\Vouchers\Events\VoucherRedeemed;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -44,6 +46,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         TransactionCreatedEvent::class => [
             TransactionCreatedListener::class
+        ],
+        VoucherRedeemed::class => [
+            OnboardAgentToOrganization::class
         ],
     ];
 

@@ -23,7 +23,6 @@ class GetHypervergeLoginToken
             $token = $response->json('result.token');
         }
 
-
         return $token;
     }
 }

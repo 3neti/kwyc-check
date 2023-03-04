@@ -13,6 +13,7 @@ use App\Enums\ChannelEnum;
 use App\Enums\FormatEnum;
 use App\Models\Campaign;
 use App\Models\Package;
+use App\Models\Voucher;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -33,9 +34,11 @@ class RegisterOrganizationTest extends TestCase
         $user = User::factory()->create();
 
         /*** act ***/
-        $campaign = RegisterOrganization::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
+        $voucher = RegisterOrganization::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
+        $campaign = $voucher->campaigns()->first();
 
         /*** assert ***/
+        $this->assertInstanceOf(Voucher::class, $voucher);
         $this->assertInstanceOf(Campaign::class, $campaign);
         $this->assertInstanceOf(Repository::class, $campaign->repository);
         $this->assertInstanceOf(Organization::class, $campaign->repository->organization);
@@ -73,7 +76,8 @@ class RegisterOrganizationTest extends TestCase
 
         /*** assert ***/
         $response->assertSuccessful();
-        tap(Campaign::find($response->json('id')), function(Campaign $campaign)
+        $code = $response->json('code');
+        tap(Voucher::where('code', $code)->first()->campaigns->first(), function(Campaign $campaign)
         use ($response, $package, $orgName, $channelEnum, $formatEnum, $address, $command, $user) {
             $this->assertSame($orgName, $campaign->repository->organization->name);
             $this->assertSame($channelEnum, $campaign->repository->channel);
@@ -99,9 +103,11 @@ class RegisterOrganizationTest extends TestCase
         $user = User::factory()->create();
 
         /*** act ***/
-        RegisterOrganization::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
+        $voucher = RegisterOrganization::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
 
         /*** assert ***/
-        Notification::assertSentTo($user, SendRegisterUserNotification::class);
+        Notification::assertSentTo($user, SendRegisterUserNotification::class, function ($notification) use ($voucher) {
+            return $notification->voucher = $voucher;
+        });
     }
 }

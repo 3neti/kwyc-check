@@ -44,6 +44,7 @@ class RegisterUserTest extends TestCase
     /** @test */
     public function register_user_action_end_point()
     {
+//        $this->markTestSkipped('skipped... while changing to register-agent');
         /*** arrange ***/
         $organization = Organization::factory()->create();
         $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
@@ -58,7 +59,7 @@ class RegisterUserTest extends TestCase
         $this->assertNull(User::where($attributes)->first());
 
         /*** act ***/
-        $response = $this->postJson("/api/register-user/{$organization->id}", $attributes);
+        $response = $this->postJson("/api/register-agent/{$organization->id}", $attributes);
 
         /*** assert ***/
         $response->assertSuccessful();

@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register-user/{org}', RegisterUser::class);
+Route::post('/register-agent/{org}', RegisterUser::class)->name('recruit-agent');
 
 Route::group(['middleware' => ['auth:sanctum']], function ($route) {
     $route->post('/register-organization', RegisterOrganization::class);

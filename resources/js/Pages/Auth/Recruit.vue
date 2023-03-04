@@ -1,36 +1,54 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
+import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Checkbox from '@/Components/Checkbox.vue';
 
-const form = useForm({
-    name: '',
-    email: '',
-    mobile: '',
-    password: '',
-    password_confirmation: '',
-    terms: false,
+const props = defineProps({
+    voucher: {
+        type: Object
+    },
+    organization: {
+        type: Object
+    },
 });
 
+const form = useForm({
+    name: 'John Doe',
+    email: 'john.doe@gmail.com',
+    mobile: '09178251991',
+    password: 'Weetypie1',
+    password_confirmation: 'Weetypie1',
+    terms: true,
+});
+
+
 const submit = () => {
-    form.post(route('register'), {
+    form.voucher = props.voucher.code
+    form.post(route('store-recruit', [props.voucher.code]), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head><title>Recruit Agent</title></Head>
 
     <AuthenticationCard>
         <template #logo>
             <AuthenticationCardLogo />
         </template>
+
+        <h1>
+            <a>
+                {{ organization.name }}
+            </a>
+        </h1>
 
         <form @submit.prevent="submit">
             <div>
@@ -116,7 +134,7 @@ const submit = () => {
                 </Link>
 
                 <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
+                    Register {{ voucher.code }}
                 </PrimaryButton>
             </div>
         </form>

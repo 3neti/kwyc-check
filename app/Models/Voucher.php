@@ -36,6 +36,11 @@ class Voucher extends BaseVoucher
         'data',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
+
     /**
      * Products related this voucher
      *
@@ -54,5 +59,10 @@ class Voucher extends BaseVoucher
     public function scopeWithData(): Builder
     {
         return $this->data->modelScope();
+    }
+
+    public function getCampaignAttribute(): Campaign
+    {
+        return $this->items->first()->item;
     }
 }

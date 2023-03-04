@@ -2,32 +2,36 @@
 
 namespace App\Notifications;
 
-use App\Models\Organization;
 use LBHurtado\EngageSpark\Notifications\BaseNotification;
+use App\Models\Organization;
+use App\Models\Voucher;
 use App\Models\Campaign;
 
 class SendRegisterUserNotification extends BaseNotification
 {
-    /** @var Campaign */
-    protected $campaign;
+    /** @var Voucher */
+    public Voucher $voucher;
 
-    public function __construct(Campaign $campaign)
+    /** @var Campaign */
+    protected Campaign $campaign;
+
+    public function __construct(Voucher $voucher)
     {
-        $this->setCampaign($campaign);
+        $this->setVoucher($voucher);
     }
 
-    protected function setCampaign(Campaign $campaign): void
+    protected function setVoucher(Voucher $voucher)
     {
-        $this->campaign = $campaign;
+        $this->voucher = $voucher;
         $this->message = trans('domain.org-campaign', [
-            'org' => $this->getOrg()->name,
+            'org' => rtrim($this->getOrg()->name, '.'),
             'url' => $this->getURL()
         ]);
     }
 
     public function getCampaign(): Campaign
     {
-        return $this->campaign;
+        return $this->voucher->campaigns->first();
     }
 
     protected function getOrg(): Organization
@@ -35,10 +39,13 @@ class SendRegisterUserNotification extends BaseNotification
         return $this->getCampaign()->repository->organization;
     }
 
+    protected function getCode(): string
+    {
+        return $this->voucher->code;
+    }
+
     protected function getURL(): String
     {
-        $org_id = $this->getOrg()->id;
-
-        return route('register-user', compact('org_id'));
+        return route('create-recruit', ['voucher' => $this->getCode()]);
     }
 }

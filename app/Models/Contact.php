@@ -17,7 +17,5 @@ class Contact extends Model
      *
      * @var string<int, string>
      */
-    protected $fillable = [
-        'mobile', 'handle'
-    ];
+    protected $fillable = ['mobile', 'handle'];
 }

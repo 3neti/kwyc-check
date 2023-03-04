@@ -16,6 +16,8 @@ class UserObserver
      */
     public function created(User $user)
     {
+        $user->createWallet(config('wallet.wallet.default'));
+
 //        foreach (User::all() as $u) {
 //            $u->notify(NovaNotification::make()
 //                ->message('New User: ' . $user->name)

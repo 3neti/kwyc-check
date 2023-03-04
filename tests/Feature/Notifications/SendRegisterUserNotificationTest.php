@@ -22,9 +22,10 @@ class SendRegisterUserNotificationTest extends TestCase
         $mobile = '09171234567'; //TODO: provider a more robust PH mobile faker
         $user = User::factory()->create(['mobile' => $mobile]);
         $campaign = Campaign::factory()->create();
+        $voucher = $campaign->createVoucher();
 
         /*** act ***/
-        $user->notify(new SendRegisterUserNotification($campaign));
+        $user->notify(new SendRegisterUserNotification($voucher));
 
         /*** assert ***/
         Notification::assertSentTo($user, function(SendRegisterUserNotification $notification) use ($user) {
@@ -32,8 +33,8 @@ class SendRegisterUserNotificationTest extends TestCase
 
             return $register_user_message == trans('domain.org-campaign', [
                     'org' => $notification->getCampaign()->repository->organization->name,
-                    'url' => route('register-user', [
-                        'org_id' => $notification->getCampaign()->repository->organization->id
+                    'url' => route('create-recruit', [
+                        'voucher' => $notification->voucher->code
                     ])
                 ]);
         });

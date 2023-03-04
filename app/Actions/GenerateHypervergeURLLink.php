@@ -2,17 +2,18 @@
 
 namespace App\Actions;
 
-use Illuminate\Support\Facades\Http;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Support\Facades\Http;
 
-class GetHypervergeURLLink
+class GenerateHypervergeURLLink
 {
     use AsAction;
 
-    public function handle(string $transactionId, array $inputs = []): ?string
+    public function handle($transactionId): ?string
     {
         $workflowId = config('domain.hyperverge.url.workflow');
-        $redirectUrl = config('domain.hyperverge.url.redirect');
+        $redirectUrl = route('hyperverge-result');
+        $inputs = [];
         $inputs = array_merge(['app' => config('app.name')], $inputs);
         $languages = ['en' => 'English'];
         $defaultLanguage = 'en';

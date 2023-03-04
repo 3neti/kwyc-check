@@ -6,12 +6,14 @@ use App\Notifications\SendRegisterUserNotification;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Validation\Rules\Enum;
+use MOIREI\Vouchers\VoucherScheme;
 use App\Models\Organization;
 use App\Models\Repository;
 use App\Enums\ChannelEnum;
 use App\Enums\FormatEnum;
 use App\Models\Campaign;
 use App\Models\Package;
+use App\Models\Voucher;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -19,15 +21,16 @@ class RegisterOrganization
 {
     use AsAction;
 
-    public function handle(User $user, string $name, ChannelEnum $channel, FormatEnum $format, string $address, string $command, Package $package): Campaign
+    public function handle(User $admin, string $name, ChannelEnum $channel, FormatEnum $format, string $address, string $command, Package $package): Voucher
     {
         $campaign = $this->newCampaign($package, $this->newRepository(
-            $this->newOrganization($user, $name),
+            $this->newOrganization($admin, $name),
             compact( 'channel', 'format', 'address', 'command')
         ));
-        $user->notify(new SendRegisterUserNotification($campaign));
+        $voucher = $campaign->createVoucher($this->getAttributes());
+        $admin->notify(new SendRegisterUserNotification($voucher));
 
-        return $campaign;
+        return $voucher;
     }
 
     public function rules(): array
@@ -42,7 +45,7 @@ class RegisterOrganization
         ];
     }
 
-    public function asController(ActionRequest $request): Campaign
+    public function asController(ActionRequest $request): Voucher
     {
         $data = $request->all();
         $data['channel'] = ChannelEnum::from($data['channel']);
@@ -81,5 +84,23 @@ class RegisterOrganization
             $campaign->repository()->associate($repository);
             $campaign->save();
         });
+    }
+
+    protected function getAttributes()
+    {
+        return [
+            'limit_scheme' => VoucherScheme::REDEEMER,
+            'quantity' => 1,
+            'data' => [
+                'brothers' => [
+                    'Dene' => ['birthdate' => 'April 1, 1971'],
+                    'Glen' => ['birthdate' => 'October 29, 1972'],
+                ],
+                'sisters' => [
+                    'Jo Anna' => ['birthdate' => 'March 5, 1974'],
+                    'Rowena' => ['birthdate' => 'April 18, 1975'],
+                ],
+            ],
+        ];
     }
 }

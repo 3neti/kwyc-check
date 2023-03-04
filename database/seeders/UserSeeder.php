@@ -24,9 +24,9 @@ class UserSeeder extends Seeder
 //        }
 
         tap(app(CreateNewUser::class)->create($attribs), function (User $system) use ($attribs) {
-            $system->mobile = $attribs['mobile'];
-            $system->save();
-            $system->depositFloat(1000000);
+//            $system->mobile = $attribs['mobile'];
+//            $system->save();
+            $system->depositFloat(config('domain.default.system.deposit'));
         });
     }
 }

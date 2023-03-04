@@ -12,6 +12,9 @@
             <directory suffix="Test.php">./tests/Feature</directory>
             <exclude>./tests/Feature/Jetstream</exclude>
         </testsuite>
+        <testsuite name="Simulation">
+            <directory suffix="Test.php">./tests/Simulation</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>
