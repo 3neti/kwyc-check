@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Notifications\SendAgentOnboardingNotification;
+use App\Notifications\OnboardedAgentNotification;
 use MOIREI\Vouchers\Events\VoucherRedeemed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,7 +32,7 @@ class OnboardAgentToOrganization
             $agent = $event->redeemer;
             $organization = $event->voucher->campaign->repository->organization;
             $organization->users()->attach($agent);
-            $agent->notify(new SendAgentOnboardingNotification($event->voucher));
+            $agent->notify(new OnboardedAgentNotification($event->voucher));
         }
     }
 }

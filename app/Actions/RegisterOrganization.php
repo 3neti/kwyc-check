@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use App\Notifications\SendRegisterUserNotification;
+use App\Notifications\RegisteredOrganizationNotification;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Validation\Rules\Enum;
@@ -28,7 +28,7 @@ class RegisterOrganization
             compact( 'channel', 'format', 'address', 'command')
         ));
         $voucher = $campaign->createVoucher($this->getAttributes());
-        $admin->notify(new SendRegisterUserNotification($voucher));
+        $admin->notify(new RegisteredOrganizationNotification($voucher));
 
         return $voucher;
     }

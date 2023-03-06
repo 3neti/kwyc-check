@@ -62,7 +62,7 @@ class RecruitedAgentController extends Controller
         $this
             ->persistAgent($validated)
             ->redeemVoucher($voucher)
-//            ->loginAgent()
+            ->loginAgent()
         ;
 
         return redirect()->route('dashboard');

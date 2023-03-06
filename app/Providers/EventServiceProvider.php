@@ -2,22 +2,24 @@
 
 namespace App\Providers;
 
-use App\Listeners\OnboardAgentToOrganization;
 use App\Models\User;
 use App\Models\Contact;
+use App\Models\Checkin;
 use App\Models\Organization;
 use App\Observers\UserObserver;
 use App\Observers\ContactObserver;
+use App\Observers\CheckinObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Observers\OrganizationObserver;
 use App\Listeners\BalanceUpdatedListener;
+use MOIREI\Vouchers\Events\VoucherRedeemed;
 use App\Listeners\TransactionCreatedListener;
+use App\Listeners\OnboardAgentToOrganization;
 use Bavix\Wallet\Internal\Events\TransactionCreatedEvent;
 use Bavix\Wallet\Internal\Events\BalanceUpdatedEventInterface;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use MOIREI\Vouchers\Events\VoucherRedeemed;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,7 @@ class EventServiceProvider extends ServiceProvider
         User::class => [UserObserver::class],
         Contact::class => [ContactObserver::class],
         Organization::class => [OrganizationObserver::class],
+        Checkin::class => [CheckinObserver::class]
     ];
 
     /**

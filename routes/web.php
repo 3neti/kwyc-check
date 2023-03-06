@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\RecruitedAgentController;
+use App\Http\Controllers\CheckedinContactController;
+use App\Http\Controllers\CheckinController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +42,8 @@ Route::middleware([
     })->name('dashboard');
     Route::resource('organizations', OrganizationController::class)
         ->only(['index', 'store', 'update']);
+    Route::resource('checkins', CheckinController::class)
+        ->only(['index', 'store']);
     Route::get('/wallet', WalletController::class)->name('wallet.index');
     Route::resource('campaigns', CampaignController::class)
         ->only(['index', 'store', 'update']);
@@ -47,9 +51,8 @@ Route::middleware([
 
 Route::webhooks('webhook-paynamics-paybiz', 'paynamics-paybiz');
 Route::get('hyperverge-api/result', ProcessHypervergeResult::class)->name('hyperverge-result');
-//Route::get('/register-agent/{code}', function ($code) {
-//    return Inertia::render('Auth/Recruit', compact('code'));
-//})->name('register-agent');
+
 Route::get('/register-agent/{code}', [AgentController::class,'recruit'])->name('register-agent');
 Route::get('/recruit/{voucher}', [RecruitedAgentController::class, 'create'])->name('create-recruit');
 Route::post('/recruit/{voucher}', [RecruitedAgentController::class, 'store'])->name('store-recruit');
+

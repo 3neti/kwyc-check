@@ -2,9 +2,9 @@
 
 namespace Tests\Simulation;
 
-use App\Notifications\SendAgentOnboardingNotification;
-use App\Notifications\SendRegisterUserNotification;
+use App\Notifications\RegisteredOrganizationNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Notifications\OnboardedAgentNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Middleware\VerifyCsrfToken;
@@ -86,7 +86,7 @@ class FieldSalesQualifierTest extends TestCase
             });
         });
         $this->assertEquals($code, $voucher->code);
-        Notification::assertSentTo($enterprise_user, SendRegisterUserNotification::class, function (SendRegisterUserNotification $notification) use ($voucher) {
+        Notification::assertSentTo($enterprise_user, RegisteredOrganizationNotification::class, function (RegisteredOrganizationNotification $notification) use ($voucher) {
             $user = $notification->voucher->campaign->repository->organization->admin;
             $org = rtrim($notification->voucher->campaign->repository->organization->name, '.');
             $url = route('create-recruit', ['voucher' => $notification->voucher->code]);
@@ -119,7 +119,7 @@ class FieldSalesQualifierTest extends TestCase
         $response->assertRedirect('/dashboard');
 
         $agent = app(User::class)->where('email', $email)->first();
-        Notification::assertSentTo($agent, SendAgentOnboardingNotification::class, function ($notification) use ($voucher) {
+        Notification::assertSentTo($agent, OnboardedAgentNotification::class, function ($notification) use ($voucher) {
             return $voucher->is($notification->voucher);
         });
         $this->assertTrue(
@@ -139,26 +139,44 @@ class FieldSalesQualifierTest extends TestCase
 
         /*** new enterprise user ***/
         $this->withoutMiddleware([VerifyCsrfToken::class])
-            ->postJson('/register', $user_attribs = $this->fakeUserAttributes())
+            ->postJson(
+                '/register',
+                $user_attribs = $this->fakeUserAttributes()
+            )
             ->assertSuccessful();
 
         /*** new registration campaign ***/
-        $code = $this->postJson("/api/register-organization",
+        $code = $this->postJson(
+            route('register-organization'),
             $campaign_attribs = $this->fakeCampaignAttributes(),
-            ['Authorization' => User::authorizationFromMobile($user_attribs['mobile'], $enterprise_user)])
+            ['Authorization' => User::authorizationFromMobile($user_attribs['mobile'], $enterprise_user)]
+        )
             ->assertSuccessful()
             ->json('code');
 
-        Notification::assertSentTo($enterprise_user, SendRegisterUserNotification::class, function (SendRegisterUserNotification $notification) use ($enterprise_user, $campaign_attribs, $code) {
-            $org = Arr::get($campaign_attribs, 'name');
-            $url = route('create-recruit', ['voucher' => $code]);
+        Notification::assertSentTo(
+            $enterprise_user,
+            RegisteredOrganizationNotification::class,
+            function (RegisteredOrganizationNotification $notification) use ($enterprise_user, $campaign_attribs, $code) {
+                $org = Arr::get($campaign_attribs, 'name');
+                $url = route('create-recruit', ['voucher' => $code]);
 
-            return $notification->getContent($enterprise_user) == trans('domain.org-campaign', ['org' => $org, 'url' => $url]);
-        });
+                return $notification->getContent($enterprise_user) == trans('domain.org-campaign', ['org' => $org, 'url' => $url]);
+            });
 
         /*** new agent ***/
         $this->withoutMiddleware([VerifyCsrfToken::class])
-            ->postJson("/recruit/{$code}", $agent_attribs = $this->fakeUserAttributes())
+            ->postJson(
+                route('store-recruit', ['voucher' => $code]),
+                $agent_attribs = $this->fakeUserAttributes()
+            )
             ->assertRedirect('/dashboard');
+
+        Notification::assertSentTo(
+            $agent = User::fromMobile($agent_attribs['mobile']),
+            OnboardedAgentNotification::class,
+            function (OnboardedAgentNotification $notification) use ($code) {
+                return $notification->voucher->code == $code;
+            });
     }
 }

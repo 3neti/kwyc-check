@@ -3,7 +3,7 @@
 namespace Tests\Feature\Actions;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\SendRegisterUserNotification;
+use App\Notifications\RegisteredOrganizationNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Actions\RegisterOrganization;
@@ -106,7 +106,7 @@ class RegisterOrganizationTest extends TestCase
         $voucher = RegisterOrganization::run($user, $orgName, $channelEnum, $formatEnum, $address, $command, $package);
 
         /*** assert ***/
-        Notification::assertSentTo($user, SendRegisterUserNotification::class, function ($notification) use ($voucher) {
+        Notification::assertSentTo($user, RegisteredOrganizationNotification::class, function ($notification) use ($voucher) {
             return $notification->voucher = $voucher;
         });
     }

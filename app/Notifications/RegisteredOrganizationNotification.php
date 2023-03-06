@@ -7,7 +7,7 @@ use App\Models\Organization;
 use App\Models\Voucher;
 use App\Models\Campaign;
 
-class SendRegisterUserNotification extends BaseNotification
+class RegisteredOrganizationNotification extends BaseNotification
 {
     /** @var Voucher */
     public Voucher $voucher;

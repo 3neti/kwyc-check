@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 use App\Models\Voucher;
 
-class SendAgentOnboardingNotification extends Notification
+class OnboardedAgentNotification extends Notification
 {
     use Queueable;
 

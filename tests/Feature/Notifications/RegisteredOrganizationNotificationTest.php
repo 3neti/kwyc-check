@@ -3,14 +3,14 @@
 namespace Tests\Feature\Notifications;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\SendRegisterUserNotification;
+use App\Notifications\RegisteredOrganizationNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Models\Campaign;
 use App\Models\User;
 use Tests\TestCase;
 
-class SendRegisterUserNotificationTest extends TestCase
+class RegisteredOrganizationNotificationTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
@@ -25,10 +25,10 @@ class SendRegisterUserNotificationTest extends TestCase
         $voucher = $campaign->createVoucher();
 
         /*** act ***/
-        $user->notify(new SendRegisterUserNotification($voucher));
+        $user->notify(new RegisteredOrganizationNotification($voucher));
 
         /*** assert ***/
-        Notification::assertSentTo($user, function(SendRegisterUserNotification $notification) use ($user) {
+        Notification::assertSentTo($user, function(RegisteredOrganizationNotification $notification) use ($user) {
             $register_user_message = $notification->getContent($user);
 
             return $register_user_message == trans('domain.org-campaign', [
