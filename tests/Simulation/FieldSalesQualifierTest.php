@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Notifications\OnboardedAgentNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
+use App\Actions\GenerateHypervergeURLLink;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Actions\RegisterOrganization;
 use App\Models\OrganizationUser;
@@ -14,7 +15,9 @@ use Illuminate\Support\Arr;
 use App\Enums\ChannelEnum;
 use App\Enums\FormatEnum;
 use App\Models\Package;
+use App\Models\Contact;
 use App\Models\Voucher;
+use App\Models\Checkin;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -170,13 +173,32 @@ class FieldSalesQualifierTest extends TestCase
                 route('store-recruit', ['voucher' => $code]),
                 $agent_attribs = $this->fakeUserAttributes()
             )
-            ->assertRedirect('/dashboard');
+            ->assertRedirect('dashboard');
+        $this->assertAuthenticated();
 
         Notification::assertSentTo(
-            $agent = User::fromMobile($agent_attribs['mobile']),
+            User::fromMobile($agent_attribs['mobile']),
             OnboardedAgentNotification::class,
             function (OnboardedAgentNotification $notification) use ($code) {
                 return $notification->voucher->code == $code;
             });
+
+        /*** new contact checkin ***/
+        GenerateHypervergeURLLink::shouldRun();
+        $this->assertCount(0, Checkin::all());
+        auth()->forgetGuards();
+        $this->postJson(
+            route('checkins.store'),
+            ['mobile' => $contact_mobile = $this->faker->mobileNumber()],
+            ['Authorization' => User::authorizationFromMobile($agent_attribs['mobile'], $agent)]
+            )
+            ->assertRedirect(route('checkins.index'))
+        ;
+        $this->assertAuthenticatedAs($agent);
+        $this->assertCount(1, Checkin::all());
+        tap(app(Checkin::class)->first(), function ($checkin) use ($agent, $contact_mobile) {
+            $this->assertTrue($agent->is($checkin->agent));
+            $this->assertTrue($checkin->person->is(Contact::fromMobile($contact_mobile)));
+        });
     }
 }

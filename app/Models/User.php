@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Actions\Fortify\CreateNewUser;
-use App\Actions\NewCheckin;
+use App\Actions\Checkin\AutoRemoteCheckin;
 use App\Classes\Phone;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -126,7 +126,7 @@ class User extends Authenticatable implements Wallet, Confirmable, WalletFloat
 
     public function checkin()
     {
-        $checkin = NewCheckin::run($this);
+        $checkin = AutoRemoteCheckin::run($this);
         $this->notify();
     }
 }

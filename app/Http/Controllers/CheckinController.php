@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Arr;
 use Propaganistas\LaravelPhone\Rules\Phone;
+use App\Actions\Checkin\AutoRemoteCheckin;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\StoreCheckin;
 use Illuminate\Http\Request;
-use App\Actions\NewCheckin;
+use Illuminate\Support\Arr;
 use App\Models\Checkin;
 use Inertia\Response;
 use Inertia\Inertia;
 
 class CheckinController extends Controller
 {
+    /**
+     * @return Response
+     */
     public function index(): Response
     {
         return Inertia::render('Checkins/Index', [
@@ -24,13 +29,13 @@ class CheckinController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(StoreCheckin $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'mobile' => ['nullable', (new Phone)->mobile()->country('PH')]
-        ]);
-
-        NewCheckin::run(auth()->user(), Arr::get($validated, 'mobile', null));
+        AutoRemoteCheckin::run(auth()->user(), $request->validated('mobile'));
 
         return redirect(route('checkins.index'));
     }

@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
-use App\Traits\HasData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Arr;
+use App\Actions\Checkin\AssociatePersonToCheckin;
+use App\Notifications\NewCheckinNotification;
+use App\Actions\GenerateHypervergeURLLink;
+use Illuminate\Database\Eloquent\Model;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\QrCode;
+use Illuminate\Support\Arr;
+use App\Traits\HasData;
 
 class Checkin extends Model
 {
@@ -41,14 +44,38 @@ class Checkin extends Model
         return $this->morphTo();
     }
 
-    public function hydrate(): self
+    public static function createAutoAssociateAgent(User $agent): self
     {
-        if ($idFullName = $this->getAttribute('IdFullName')) {
-            if ($this->person instanceof Contact) {
-                $this->person->setAttribute('handle', $idFullName);
-                $this->person->save();
-            }
+        $checkin = Checkin::make();
+        $checkin->agent()->associate($agent);
+        $checkin->save();
+
+        return $checkin;
+    }
+
+    public function updateRemoteGeneratedURL(): self
+    {
+        $url = GenerateHypervergeURLLink::run($this->getAttribute('uuid'));
+        if ($url) {
+            $this->setAttribute('url', $url);
+            $this->save();
         }
+
+        return $this;
+    }
+
+    public function updateContactPersonFromMobile(string $mobile = null): self
+    {
+        if ($mobile) {
+            AssociatePersonToCheckin::run($this, $mobile);
+        }
+
+        return $this;
+    }
+
+    public function notifyAgent(): self
+    {
+        $this->agent?->notify(new NewCheckinNotification($this->getAttribute('url')));
 
         return $this;
     }

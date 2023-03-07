@@ -1,7 +1,6 @@
 <script setup>
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {Link} from "@inertiajs/vue3";
 
 dayjs.extend(relativeTime);
 defineProps(['checkin']);

@@ -36,9 +36,6 @@ class TransactionCreatedListener
         $verb = 'verb here';
         $wallet_direction = '';
         $source = 'the system';
-        logger('start');
-        logger($transaction);
-        logger('end');
         switch ($event->getType()) {
             case 'deposit': {
                 $verb = 'deposit by';

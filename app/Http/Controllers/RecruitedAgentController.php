@@ -66,8 +66,6 @@ class RecruitedAgentController extends Controller
         ;
 
         return redirect()->route('dashboard');
-
-//        return redirect()->route('dashboard')->with('success', "Account successfully registered.");
     }
 
     /**
@@ -108,7 +106,7 @@ class RecruitedAgentController extends Controller
      */
     protected function loginAgent(): self
     {
-        auth()->login($this->agent);
+        auth('web')->login($this->agent);
 
         return $this;
     }
