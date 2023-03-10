@@ -9,7 +9,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Actions\GenerateHypervergeURLLink;
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Actions\ProcessHypervergeResult;
 use App\Actions\RegisterOrganization;
+use Illuminate\Support\Facades\Queue;
 use App\Models\OrganizationUser;
 use Illuminate\Support\Arr;
 use App\Enums\ChannelEnum;
@@ -196,9 +198,19 @@ class FieldSalesQualifierTest extends TestCase
         ;
         $this->assertAuthenticatedAs($agent);
         $this->assertCount(1, Checkin::all());
-        tap(app(Checkin::class)->first(), function ($checkin) use ($agent, $contact_mobile) {
+        $checkin = tap(app(Checkin::class)->first(), function ($checkin) use ($agent, $contact_mobile) {
             $this->assertTrue($agent->is($checkin->agent));
             $this->assertTrue($checkin->person->is(Contact::fromMobile($contact_mobile)));
+            $this->assertCount(0, $checkin->person->data);
         });
+
+        /*** process contact face check ***/
+        Queue::fake();
+
+        $this->get(route('hyperverge-result', [
+            'transactionId' => $checkin->uuid,
+            'status' => 'auto_approved'
+        ]))->assertSuccessful();
+        ProcessHypervergeResult::assertPushed();
     }
 }

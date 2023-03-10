@@ -2,9 +2,12 @@
 
 namespace App\Actions;
 
+use App\Actions\Checkin\HydrateCheckinPerson;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Lorisleiva\Actions\ActionRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Arr;
 use App\Models\Checkin;
 
@@ -12,28 +15,27 @@ class ProcessHypervergeResult
 {
     use AsAction;
 
+    protected Checkin $checkin;
+
+    protected Response $response;
+
     public function handle(Checkin $checkin): bool
     {
-        $transactionId = $checkin->uuid;
-        $response = Http::withHeaders([
-            'appId' => config('domain.hyperverge.api.id'),
-            'appKey' => config('domain.hyperverge.api.key'),
-        ])->post(config('domain.hyperverge.api.url.result'), compact('transactionId'));
+        $this->setCheckin($checkin)
+            ->getData()
+            ->processData()
+            ->hydratePerson()
+        ;
 
-        $json = null; if ($response->successful()) {
-            $json = $response->json();
-            $checkin->setAttribute('data', $json);
-            $checkin->save();
-        }
-
-        return !is_null($json);
+        return (null !== $this->checkin->getAttribute('data'));
     }
 
+    #[ArrayShape(['transactionId' => "string", 'status' => "string"])]
     public function rules(): array
     {
         return [
-            'transactionId' => ['required','uuid'],
-            'status' => ['required']
+            'transactionId' => 'required|uuid',
+            'status' => 'required'
         ];
     }
 
@@ -53,5 +55,42 @@ class ProcessHypervergeResult
     public function asJob(Checkin $checkin)
     {
         $this->handle($checkin);
+    }
+
+    protected function setCheckin(Checkin $checkin): self
+    {
+        $this->checkin = $checkin;
+
+        return $this;
+    }
+
+    protected function getData(): self
+    {
+        $headers = [
+            'appId' => config('domain.hyperverge.api.id'),
+            'appKey' => config('domain.hyperverge.api.key'),
+        ];
+        $url = config('domain.hyperverge.api.url.result');
+        $attribs = ['transactionId' => $this->checkin->getAttribute('uuid')];
+        $this->response = Http::withHeaders($headers)->post($url, $attribs);
+
+        return $this;
+    }
+
+    protected function processData(): self
+    {
+        if ($this->response->successful()){
+            $this->checkin->setAttribute('data', $this->response->json());
+            $this->checkin->save();
+        }
+
+        return $this;
+    }
+
+    protected function hydratePerson(): self
+    {
+        HydrateCheckinPerson::dispatch($this->checkin);
+
+        return $this;
     }
 }

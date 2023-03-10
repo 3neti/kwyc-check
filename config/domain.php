@@ -77,4 +77,12 @@ return [
             'face_id_match_details' => env('HYPERVERGE_MAP_FACE_ID_MATCH_DETAILS','result.results.2.apiResponse.result.details'),
         ],
     ],
+    'checkin' => [
+        'person' => [
+            'hydrate' => [
+                \App\Pipes\HydrateCheckinPersonData::class,
+                \App\Pipes\HydrateCheckinPersonHandle::class,
+            ],
+        ],
+    ],
 ];

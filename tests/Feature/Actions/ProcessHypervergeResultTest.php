@@ -3,8 +3,10 @@
 namespace Tests\Feature\Actions;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Actions\Checkin\HydrateCheckinPerson;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Actions\ProcessHypervergeResult;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Arr;
@@ -26,6 +28,7 @@ class ProcessHypervergeResultTest extends TestCase
     public function process_hyperverge_result_accepts_checkin_fetches_and_appends_result_to_data()
     {
         /*** arrange ***/
+        Queue::fake();
         $checkin = Checkin::factory()->create();
         $json = $this->getJsonResponse($checkin->uuid);
         $array = json_decode($json, true);
@@ -48,6 +51,7 @@ class ProcessHypervergeResultTest extends TestCase
         foreach (config('domain.hyperverge.mapping') as $key=>$value) {
             $this->assertEquals(Arr::get($array, $value), $checkin->getAttribute($key));
         }
+        HydrateCheckinPerson::assertPushed();
     }
 
     protected function getJsonResponse($transactionId): string
