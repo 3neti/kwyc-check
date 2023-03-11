@@ -18,8 +18,8 @@ class CampaignTest extends TestCase
     {
         /*** arrange ***/
         $active = $this->faker->boolean;
-        $start_date = $this->faker->date();
-        $end_date = $this->faker->date();
+        $start_date = $this->faker->dateTime();
+        $end_date = $this->faker->dateTime();
         $package = Package::factory()->create();
         $repository = Repository::factory()->create();
 
