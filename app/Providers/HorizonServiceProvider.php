@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use Laravel\Horizon\HorizonApplicationServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\Horizon;
-use Laravel\Horizon\HorizonApplicationServiceProvider;
+use App\Models\User;
 
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
@@ -16,10 +17,10 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         parent::boot();
 
         // Horizon::routeSmsNotificationsTo('15556667777');
-        // Horizon::routeMailNotificationsTo('example@example.com');
+         Horizon::routeMailNotificationsTo(User::getSystem()->email);
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
 
-        // Horizon::night();
+         Horizon::night();
     }
 
     /**
@@ -31,7 +32,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         Gate::define('viewHorizon', function ($user) {
             return in_array($user->email, [
-                //
+                User::getSystem()->email,
             ]);
         });
     }
